@@ -2,6 +2,7 @@ const express = require('express');
 const app = express()
 const connection = require('./DB/db')
 
+
 const conversions = require('./DB/models/conversions')
 
 let brl = "brl"
@@ -78,9 +79,11 @@ connection.authenticate().then(() => {
 } */
 
 
-app.get('/conversions', (req, res) => {
-    res.json(DB.conversions)
-    res.sendStatus(200)
+app.get('/conversions', (req, res) => {    
+    conversions.findAll().then(conversions => {
+        res.send(conversions)
+    })
+    
 })
 
 app.post('/conversion/:userId/:to/:amount/:from', (req, res) => {
