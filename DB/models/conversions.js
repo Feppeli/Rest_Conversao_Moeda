@@ -20,7 +20,7 @@ const conversions = connection.define('conversions', {
     },
     quote: {
         type: Sequelize.STRING,
-        allowNull: true
+        allowNull: false
     },
     date: {
         type: Sequelize.STRING,

@@ -99,8 +99,7 @@ app.post('/conversion/:userId/:to/:amount/:from', (req, res) => {
 
                 var resultQuote = []
                 resultQuote.push(JSON.parse(result))
-                console.log(resultQuote)
-                console.log(quote)
+                console.log(resultQuote[0].info.quote)
 
 
                 conversions.create({
@@ -108,7 +107,7 @@ app.post('/conversion/:userId/:to/:amount/:from', (req, res) => {
                     to: to,
                     amount: amount,
                     from: from,
-                    quote: quote,   // Taxa de conversão bugada
+                    quote: resultQuote[0].info.quote,   // Taxa de conversão bugada
                     date: dataAtual
                 })
             })

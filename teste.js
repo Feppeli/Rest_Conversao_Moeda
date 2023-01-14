@@ -8,4 +8,4 @@ const result = [
   ]
 
 console.log(typeof(result))
-console.log(result.info.quote)
+console.log(result)
