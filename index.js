@@ -1,15 +1,7 @@
 const express = require('express');
 const app = express()
 const connection = require('./DB/db')
-
-
 const conversions = require('./DB/models/conversions')
-
-let brl = "brl"
-let usd = "usd"
-let eur = "eur"
-let jpy = "jpy"
-
 
 
 // data
@@ -43,42 +35,6 @@ connection.authenticate().then(() => {
 
 
 
-
-/* const DB = {
-    conversions: [
-    {
-        "Id": 1,
-        "date": "2023-01-14",
-        "historical": true,
-        "info": {
-          "quote": 0.817595,
-          "timestamp": 1673720763
-        },
-        "query": {
-          "amount": 8,
-          "from": "USD",
-          "to": "GBP"
-        },
-        "result": 6.54076,
-        "success": true
-    },{
-        "date": "2023-01-14",
-        "historical": true,
-        "info": {
-          "quote": 0.817595,
-          "timestamp": 1673720763
-        },
-        "query": {
-          "amount": 8,
-          "from": "USD",
-          "to": "GBP"
-        },
-        "result": 6.54076,
-        "success": true
-    }]
-} */
-
-
 app.get('/conversions', (req, res) => {    
     conversions.findAll().then(conversions => {
         res.send(conversions)
@@ -94,10 +50,16 @@ app.post('/conversion/:userId/:to/:amount/:from', (req, res) => {
 
     if(isNaN(userId)){
         res.sendStatus(400)
-    }else{
+        res.send('userId must be a number')
+    }
+    if(isNaN(amount)){
+        res.sendStatus(400)
+        res.send('Amount must be a number')
+    }
+    else{
         fetch(`https://api.apilayer.com/currency_data/convert?to=${to}&from=${from}&amount=${amount}`, requestOptions)
             .then(response => response.text())
-            .then((result, info, quote) => {
+            .then((result) => {
                 res.send(result)
 
                 var resultQuote = []
@@ -114,9 +76,11 @@ app.post('/conversion/:userId/:to/:amount/:from', (req, res) => {
                     date: dataAtual
                 })
             })
-            .catch(error => console.log('error', error));
-            
+            .catch(error => {
+                res.send(error)
+            });
     }
+    
 })
 
 
