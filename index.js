@@ -9,7 +9,7 @@ var data = new Date();
 var dia = String(data.getDate()).padStart(2, '0');
 var mes = String(data.getMonth() + 1).padStart(2, '0');
 var ano = data.getFullYear();
-dataAtual = dia + '/' + mes + '/' + ano;
+var dataAtual = dia + '/' + mes + '/' + ano;
 
 
 
@@ -17,7 +17,7 @@ dataAtual = dia + '/' + mes + '/' + ano;
 // CONFIGURAÇÃO DA API
 
 var myHeaders = new Headers();
-myHeaders.append("apikey", "ZEqS1d7GsBaHPeQkSWSkPxFTbD2gXmz0");
+myHeaders.append("apikey", "e8A7dCpwqbO3dxIhGzBxJvVc7AyrEadX");
 
 var requestOptions = {
   method: 'GET',
@@ -60,7 +60,7 @@ app.post('/conversion/:userId/:to/:amount/:from', (req, res) => {
         fetch(`https://api.apilayer.com/currency_data/convert?to=${to}&from=${from}&amount=${amount}`, requestOptions)
             .then(response => response.text())
             .then((result) => {
-                res.send(result)
+                /* res.send(result) */
 
                 var resultQuote = []
                 resultQuote.push(JSON.parse(result))
@@ -72,9 +72,23 @@ app.post('/conversion/:userId/:to/:amount/:from', (req, res) => {
                     to: to,
                     amount: amount,
                     from: from,
-                    quote: resultQuote[0].info.quote,   // Taxa de conversão bugada
+                    quote: resultQuote[0].info.quote,  
                     date: dataAtual
+                }).then(() => {
+                    conversions.findAll().then(conversion => {
+                        let dbSize = conversion.length
+                        let transitionId = dbSize
+                        console.log(typeof(transitionId))
+                        console.log(transitionId + 1)
+    
+                        conversions.findByPk(parseInt(transitionId) ).then(conversion => {
+                            res.send(conversion)
+                        })
+                    })
+
                 })
+
+                
             })
             .catch(error => {
                 res.send(error)
